@@ -1,5 +1,8 @@
-pragma solidity =0.5.16;
+/**
+ *Submitted for verification at BscScan.com on 2021-08-15
+*/
 
+pragma solidity =0.5.16;
 
 interface IFactory2LC {
     event PairCreated(address indexed token0, address indexed token1, address pair, uint);
@@ -249,8 +252,8 @@ interface IERC20 {
     function transferFrom(address from, address to, uint value) external returns (bool);
 }
 
-interface ICallee2LC {
-    function call2LC(address sender, uint amount0, uint amount1, bytes calldata data) external;
+interface IPancakeCallee {
+    function pancakeCall(address sender, uint amount0, uint amount1, bytes calldata data) external;
 }
 
 contract Pair2LC is IPair2LC, ERC202LC {
@@ -414,7 +417,7 @@ contract Pair2LC is IPair2LC, ERC202LC {
         require(to != _token0 && to != _token1, '2LC: INVALID_TO');
         if (amount0Out > 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens
         if (amount1Out > 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens
-        if (data.length > 0) ICallee2LC(to).call2LC(msg.sender, amount0Out, amount1Out, data);
+        if (data.length > 0) IPancakeCallee(to).pancakeCall(msg.sender, amount0Out, amount1Out, data);
         balance0 = IERC20(_token0).balanceOf(address(this));
         balance1 = IERC20(_token1).balanceOf(address(this));
         }
